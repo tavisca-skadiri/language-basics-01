@@ -22,8 +22,36 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
         public static int FindDigit(string equation)
         {
-            // Add your code here.
-            throw new NotImplementedException();
+            string[] eq = equation.Split('=');
+            string r = eq[1];
+            string[] eq1 = eq[0].Split('*');
+            string n1 = eq1[0];
+            string n2 = eq1[1];
+            string ans;
+            if (r.IndexOf('?') != -1) {
+                ans = (int.Parse(n1) * int.Parse(n2)).ToString();
+                if (ans.Length != r.Length)
+                    return -1;
+                return int.Parse(ans[r.IndexOf('?')].ToString());
+            }
+            else if (n1.IndexOf('?') != -1) {
+                if (int.Parse(r) % int.Parse(n2) != 0)
+                    return -1;
+                ans = (int.Parse(r) / int.Parse(n2)).ToString();
+                if (ans.Length != n1.Length)
+                    return -1;
+                return int.Parse(ans[n1.IndexOf('?')].ToString());
+            }
+            else if (n2.IndexOf('?') != -1) {
+                if (int.Parse(r) % int.Parse(n1) != 0) return -1;
+                ans = (int.Parse(r) / int.Parse(n1)).ToString();
+                if (ans.Length != n2.Length)
+                    return -1;
+                return int.Parse(ans[n2.IndexOf('?')].ToString());
+            }
+            else {
+                return -1;
+            }
         }
     }
 }
