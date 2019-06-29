@@ -4,8 +4,7 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 {
     class Program
     {
-        static void Main(string[] args)
-        {
+        static void Main(string[] args){
             Test("42*47=1?74", 9);
             Test("4?*47=1974", 2);
             Test("42*?7=1974", 4);
@@ -13,45 +12,52 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
             Test("2*12?=247", -1);
             Console.ReadKey(true);
         }
-
-        private static void Test(string args, int expected)
-        {
+        public static int FindDigit(string equation){
+            string[] equationOperands = equation.Split('=');
+            string firstOperand = equationOperands[0].Split('*')[0];
+            string secondOperand = equationOperands[0].Split('*')[1];
+            string resultOperand = equationOperands[1];
+            return QuestionMarkDetection(firstOperand,secondOperand,resultOperand);
+        }
+        public static int QuestionMarkDetection(string firstOperand, string secondOperand, string resultOperand) {
+            if (firstOperand.IndexOf('?') != -1) {
+                return FirstOperandAnalyzer(firstOperand, secondOperand, resultOperand);
+            }
+            else if (secondOperand.IndexOf('?') != -1) {
+                return SecondOperandAnalyzer(firstOperand, secondOperand, resultOperand);
+            }
+            else if (resultOperand.IndexOf('?') != -1) {
+                return ResultOperandAnalyzer(firstOperand, secondOperand, resultOperand);
+            }
+            else {
+                return -1;//no question mark present in equation
+            }
+        }
+        public static int FirstOperandAnalyzer(string firstOperand, string secondOperand, string resultOperand) {
+            if (int.Parse(resultOperand) % int.Parse(secondOperand) != 0)//not divisible
+                return -1;
+            string actualNumber = (int.Parse(resultOperand) / int.Parse(secondOperand)).ToString();
+            return FindDigit(actualNumber, firstOperand);
+        }
+        public static int SecondOperandAnalyzer(string firstOperand, string secondOperand, string resultOperand) {
+            if (int.Parse(resultOperand) % int.Parse(firstOperand) != 0)//not divisible
+                return -1;
+            string actualNumber = (int.Parse(resultOperand) / int.Parse(firstOperand)).ToString();
+            return FindDigit(actualNumber, secondOperand);
+        }
+        public static int ResultOperandAnalyzer(string firstOperand, string secondOperand, string resultOperand) {
+            string actualNumber = (int.Parse(firstOperand) * int.Parse(secondOperand)).ToString();
+            return FindDigit(actualNumber, resultOperand);
+        }
+        public static int FindDigit(string actualNumber, string operand) {
+            if (actualNumber.Length != operand.Length)
+                return -1;
+            return int.Parse(actualNumber[operand.IndexOf('?')].ToString());
+        }
+        private static void Test(string args, int expected) {
             var result = FindDigit(args).Equals(expected) ? "PASS" : "FAIL";
             Console.WriteLine($"{args} : {result}");
         }
 
-        public static int FindDigit(string equation)
-        {
-            string[] eq = equation.Split('=');
-            string r = eq[1];
-            string[] eq1 = eq[0].Split('*');
-            string n1 = eq1[0];
-            string n2 = eq1[1];
-            string ans;
-            if (r.IndexOf('?') != -1) {
-                ans = (int.Parse(n1) * int.Parse(n2)).ToString();
-                if (ans.Length != r.Length)
-                    return -1;
-                return int.Parse(ans[r.IndexOf('?')].ToString());
-            }
-            else if (n1.IndexOf('?') != -1) {
-                if (int.Parse(r) % int.Parse(n2) != 0)
-                    return -1;
-                ans = (int.Parse(r) / int.Parse(n2)).ToString();
-                if (ans.Length != n1.Length)
-                    return -1;
-                return int.Parse(ans[n1.IndexOf('?')].ToString());
-            }
-            else if (n2.IndexOf('?') != -1) {
-                if (int.Parse(r) % int.Parse(n1) != 0) return -1;
-                ans = (int.Parse(r) / int.Parse(n1)).ToString();
-                if (ans.Length != n2.Length)
-                    return -1;
-                return int.Parse(ans[n2.IndexOf('?')].ToString());
-            }
-            else {
-                return -1;
-            }
-        }
     }
 }
